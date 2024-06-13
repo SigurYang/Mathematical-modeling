@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import os
+from collections import Counter
+
 
 def data_reader(data_path,data_file,fill_na=''):
     '''
@@ -14,16 +16,30 @@ def data_reader(data_path,data_file,fill_na=''):
 
     return df
 
+def frequency_count(df):
+    all_text = ' '.join(df.astype(str).values.flatten())
+
+    # 使用Counter统计每个词的频率
+    df_count = Counter(all_text.split())
+    count_df = pd.DataFrame(df_count.items(), columns=['word', 'frequency']).sort_values(by='frequency', ascending=False)
+    
+    return count_df
+
+
 def Infector_chooser(
         df,
-        key='颅内感染'):
+        key='颅内感染',
+        index=False):
     '''
     返回感染者和非感染者
     '''
-    infection_mask = df.apply(lambda row: row.astype(str).str.contains(key, na=False).any(), axis=1)
-    rows_with_infection = df[infection_mask]
-    rows_without_infection = df[~infection_mask]
-    return rows_with_infection, rows_without_infection
+    infection_index = df.apply(lambda row: row.astype(str).str.contains(key, na=False).any(), axis=1)
+    rows_with_infection = df[infection_index]
+    rows_without_infection = df[~infection_index]
+    if index:
+        return rows_with_infection, rows_without_infection, infection_index
+    else:
+        return rows_with_infection, rows_without_infection
 
 def patient_splitter(
         df,
@@ -50,12 +66,14 @@ def one_hot(df,columns):
     columns需要和dataframe列数一致，用于列表标记
     '''
     data_size = len(df)
+    is_series = len(df.shape) == 1
     one_hot_matrix = pd.DataFrame(0, index=np.arange(data_size), columns=columns)
     for i in range(data_size):
         category = df.iloc[i]
-        category = " ".join(category.astype(str).values.flatten())
-        category = category.strip().split(" ")
-        category = pd.unique(category)
+        if not is_series:
+            category = " ".join(category.astype(str).values.flatten())
+            category = category.strip().split(" ")
+            category = pd.unique(category)
         one_hot_matrix.loc[i, category] += 1
     return one_hot_matrix
 
