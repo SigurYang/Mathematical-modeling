@@ -41,6 +41,44 @@ def Infector_chooser(
     else:
         return rows_with_infection, rows_without_infection
 
+def time_factor_processor(df):
+    # 获取唯一的标识符和索引
+    admission_num, admission_index = np.unique(df['mr_bah'], return_inverse=True)
+    specimens = np.unique(df['specimen_code'])
+    item_group_names = np.unique(df['item_group_name'])
+    item_names = np.unique(df['item_name'])
+    
+    # 创建需要处理的列
+    processed_columns = []
+    for item_group in item_group_names:
+        for item in item_names:
+            processed_columns.append(f"{item_group}-{item}")
+    
+    # 创建初始的DataFrame
+    processed_df = pd.DataFrame(0, columns=['mr_bah'] + processed_columns, index=specimens)
+    processed_df.index.name = 'specimen_code'
+    
+    # 填充数据
+    for i, row in df.iterrows():
+        specimen_code = row['specimen_code']
+        item_group = row['item_group_name']
+        item_name = row['item_name']
+        result_quantitative = row['result_quantitative']
+        mr_bah = row['mr_bah']
+        
+        # 更新对应位置的值
+        try:
+            result_quantitative = float(result_quantitative)
+        except:
+            result_quantitative = float('inf')
+        processed_df.at[specimen_code, f'{item_group}-{item_name}'] = result_quantitative
+        processed_df.at[specimen_code, 'mr_bah'] = mr_bah
+    
+    # 根据'mr_bah'排序
+    processed_df = processed_df.reset_index().sort_values(by=['mr_bah', 'specimen_code']).set_index('specimen_code')
+    
+    return processed_df
+
 def patient_splitter(
         df,
         indicators=['mr_bah', 'mr_xb', 'mr_nn', 'mr_sjzyts', 'mr_cyzyzdmc', 'mr_cyqtzdmc1',
