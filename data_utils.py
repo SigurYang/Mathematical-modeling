@@ -71,8 +71,12 @@ def one_hot(df,columns):
     for i in range(data_size):
         category = df.iloc[i]
         if not is_series:
-            category = " ".join(category.astype(str).values.flatten())
+            category = category.astype(str).values.flatten()
+            category = " ".join(filter(lambda x: x != '', category))
             category = category.strip().split(" ")
+            
+#             category = " ".join(category.astype(str).values.flatten())
+#             category = category.strip().split(" ")
             category = pd.unique(category)
         one_hot_matrix.loc[i, category] += 1
     return one_hot_matrix
