@@ -1,22 +1,36 @@
 # 数模 2024
 
-## 6/15-3:44 简单文档
+### 项目文档结构
 
-已经完成简单文档说明(./Analysis.md)(vscode 打开按 ctrl+shift+v 预览)
+**data**: 存放原始数据文件。
 
-### 数据处理相关
+**images**: 包含用于报告或 Notebook 中的图像文件。
 
-数据处理相关函数请写在 data_utils.py 中，并在工作文件中调用该文件
-（为了代码美观，高可读性，高复用性）
+**outputs**: 保存模型输出、结果文件和中间过程文件。
 
-### 协作相关
+**赛题**: 比赛问题描述文档，详细说明了比赛任务和标准。
 
-将问题分离成了多个子问题 ipynb，方便协同处理
+**notebooks**: 包含多个 Jupyter Notebooks，用于数据分析和模型构建。
 
-### 输入输出
+- **illness_analysis.ipynb**: 分析病情数据，进行特征工程和可视化。
+- **op_analysis.ipynb**: 手术数据的分析，包括预处理步骤和转换方法和可视化。
+- **time_series_analysis.ipynb**: 时间序列数据的分析及处理和可视化。
+- **model_build.ipynb**: 模型构建及训练，包括特征选择和参数调优评估模型性能。
+- **result_analysis.ipynb**: 分析模型结果和评估模型性能。
 
-输入输出放在不同的文件夹中，请将代码输入输出定向至./data 与 ./outputs 中
+**Analysis.md**: 简要分析报告，包含项目的分析过程和结果。
 
-### 赛题相关
+**data_utils.py**: 数据处理工具代码，包括数据清洗、预处理和特征工程函数。
 
-赛题内容用单独文件夹存放
+**requirements.txt**: 项目所需的 python 库和依赖项
+
+### 如何使用
+
+1. **安装依赖**: 请在项目运行前安装必要的 Python 库和依赖项。
+
+```bash
+pip install -r requirements.txt
+```
+
+2. **运行 Notebooks**: 请按上述顺序运行 Jupyter Notebooks，进行数据分析、模型构建和结果分析。
+3. **查看结果**: 所有分析结果和模型输出保存在`outputs`文件夹中。
